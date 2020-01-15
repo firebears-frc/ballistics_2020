@@ -7,9 +7,6 @@ public class Port {
 		FORMAT.setMaximumFractionDigits(4);
 	}
 
-	/** Power cell diameter (m) */
-	static private final double CELL_M = 0.1778;
-
 	/** Bottom port */
 	static public final Port BOTTOM = new Port("BOTTOM", 0.5842, 0.254,
 		0.0);
@@ -56,15 +53,15 @@ public class Port {
 
 	/** Get clearance of a power cell at given elevation (center) */
 	public double clearance(double cellM) {
-		double topM = cellM + CELL_M / 2.0;
-		double bottomM = cellM - CELL_M / 2.0;
+		double topM = cellM + PowerCell.RADIUS_M;
+		double bottomM = cellM - PowerCell.RADIUS_M;
 		return Math.min(top() - topM, bottomM - bottom());
 	}
 
 	/** Print clearance of a power cell at given elevation */
 	public void printClearance(double cellM) {
-		double topM = cellM + CELL_M / 2.0;
-		double bottomM = cellM - CELL_M / 2.0;
+		double topM = cellM + PowerCell.RADIUS_M;
+		double bottomM = cellM - PowerCell.RADIUS_M;
 		System.out.println(name + "\tTOP\t" +
 			FORMAT.format(topM) + " m \t" +
 			FORMAT.format(top()) + " m \t" +
@@ -73,5 +70,19 @@ public class Port {
 			FORMAT.format(bottomM) + " m \t" +
  			FORMAT.format(bottom()) + " m\t" +
 			FORMAT.format(bottomM - bottom()) + " m");
+	}
+
+	/** Check for port / power cell collision */
+	public boolean checkCollision(PowerCell cell) {
+		return (cell.maxX() >= recessedM && cell.minX() <= recessedM) &&
+		       (cell.y < bottom() || cell.y > top() ||
+		        cell.checkCollision(recessedM, top()) ||
+		        cell.checkCollision(recessedM, bottom()));
+	}
+
+	/** Check if a power cell has passed the port, but is out of range */
+	public boolean checkRange(PowerCell cell) {
+		return cell.x >= recessedM &&
+		       (cell.y < bottom() || cell.y > top());
 	}
 }
