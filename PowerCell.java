@@ -17,8 +17,8 @@ public class PowerCell {
 	/** Drag coefficient FIXME */
 	static private final double DRAG_COEFFICIENT = 0.5;
 
-	/** Physical mass FIXME */
-	static public final double MASS_KG = 0.2;
+	/** Physical mass (about 5 ounces) */
+	static public final double MASS_KG = 0.141748;
 
 	/** Displacement from target, starting with negative range (m) */
 	public double x;
