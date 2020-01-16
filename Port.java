@@ -1,11 +1,5 @@
-import java.text.NumberFormat;
-
 /** Port for Power Cells */
 public class Port {
-	static private final NumberFormat FORMAT = NumberFormat.getInstance();
-	static {
-		FORMAT.setMaximumFractionDigits(4);
-	}
 
 	/** Bottom port */
 	static public final Port BOTTOM = new Port("BOTTOM", 0.5842, 0.254,
@@ -49,27 +43,6 @@ public class Port {
 	/** Get elevation at bottom of port */
 	public double bottom() {
 		return elevationM - heightM / 2.0;
-	}
-
-	/** Get clearance of a power cell at given elevation (center) */
-	public double clearance(double cellM) {
-		double topM = cellM + PowerCell.RADIUS_M;
-		double bottomM = cellM - PowerCell.RADIUS_M;
-		return Math.min(top() - topM, bottomM - bottom());
-	}
-
-	/** Print clearance of a power cell at given elevation */
-	public void printClearance(double cellM) {
-		double topM = cellM + PowerCell.RADIUS_M;
-		double bottomM = cellM - PowerCell.RADIUS_M;
-		System.out.println(name + "\tTOP\t" +
-			FORMAT.format(topM) + " m \t" +
-			FORMAT.format(top()) + " m \t" +
-			FORMAT.format(top() - topM) + " m");
-		System.out.println(name + "\tBOTTOM\t" +
-			FORMAT.format(bottomM) + " m \t" +
- 			FORMAT.format(bottom()) + " m\t" +
-			FORMAT.format(bottomM - bottom()) + " m");
 	}
 
 	/** Check for port / power cell collision */
