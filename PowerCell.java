@@ -76,12 +76,17 @@ public class PowerCell {
 	/** Velocity in Y direction (m/s) */
 	public double vy;
 
+	/** Tangential velocity (m/s) */
+	private final double tv;
+
 	/** Create a power cell */
 	public PowerCell(double x, double y, double vx, double vy) {
 		this.x = x;
 		this.y = y;
 		this.vx = vx;
 		this.vy = vy;
+		// Approximate tangential velocity with no basis in fact
+		tv = velocity() / 4.0;
 	}
 
 	/** Get the velocity (m/s) */
@@ -114,17 +119,24 @@ public class PowerCell {
 		x += vx * t;
 		y += vy * t;
 		vy -= GRAVITY * t;
-		calculateDrag(t);
+		double v = velocity();
+		double d = calculateDrag(t, v);
+		double m = calculateMagnusEffect(t, v);
+		applyDrag(v, d, t);
+		applyMagnus(v, m, t);
 	}
 
-	/** Calculate the aerodynamic drag */
-	private void calculateDrag(double t) {
-		double v = velocity();
+	/** Calculate the aerodynamic drag acceleration */
+	private double calculateDrag(double t, double v) {
 		double drag = 0.5 * AIR_MASS_DENSITY * v * v * REFERENCE_AREA *
-			dragCoefficient(reynoldsNumber());
+			dragCoefficient(reynoldsNumber(v));
 		// F = ma, so a = F / m
-		double acc = drag / MASS_KG;
-		double dv = acc * t; // delta velocity magnitude
+		return drag / MASS_KG;
+	}
+
+	/** Apply drag acceleration */
+	private void applyDrag(double v, double d, double t) {
+		double dv = d * t; // delta velocity magnitude
 		// Normalized acceleration vector
 		double ax = vx / v;
 		double ay = vy / v;
@@ -133,9 +145,33 @@ public class PowerCell {
 	}
 
 	/** Calculate the Reynolds number based on velocity */
-	private double reynoldsNumber() {
-		return velocity() * AIR_MASS_DENSITY * REFERENCE_LENGTH /
+	private double reynoldsNumber(double v) {
+		return v * AIR_MASS_DENSITY * REFERENCE_LENGTH /
 			AIR_VISCOSITY_COEFFICIENT;
+	}
+
+	/** Calculate the magnus effect */
+	private double calculateMagnusEffect(double t, double v) {
+		double lift = 0.5 * AIR_MASS_DENSITY * v * v * REFERENCE_AREA *
+			liftCoefficient(v);
+		// F = ma, so a = F / m
+		return lift / MASS_KG;
+	}
+
+	/** Apply magnus acceleration */
+	private void applyMagnus(double v, double m, double t) {
+		double dv = m * t; // delta velocity magnitude
+		// Normalized acceleration vector (backspin)
+		double ax = vy / v;
+		double ay = vx / v;
+		vx -= ax * dv;
+		vy += ay * dv;
+	}
+
+	/** Calculate the magnus lift coefficient */
+	private double liftCoefficient(double v) {
+		double spin = tv / v;
+		return spin * 0.2;
 	}
 
 	/** Check collision with targets */

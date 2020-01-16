@@ -58,10 +58,16 @@ public class Shot {
 		sb.append(" s");
 		sb.append("  dy: ");
 		sb.append(DISTANCE.format(value()));
+		sb.append("  x: ");
+		sb.append(DISTANCE.format(cell.x));
+		sb.append("  y: ");
+		sb.append(DISTANCE.format(cell.y));
 		if (isInnerGoal())
 			sb.append("  INNER GOAL!");
 		else if (isOuterGoal())
 			sb.append("  OUTER GOAL!");
+		else
+			sb.append("  MISS!");
 		return sb.toString();
 	}
 }

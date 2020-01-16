@@ -71,10 +71,10 @@ Where:
 
 Where:
 - 𝑀 is the Magnus force (N) in 𝑤̂ ⨯ 𝑣̂ direction
-- 𝐿 is the lift coefficient, dependant on spin factor
-  * Experimentally determined, 0.22 for a baseball
 - 𝑣̂ is the velocity vector
 - 𝑤̂ is the angular velocity vector
+- 𝐿 is the lift coefficient, dependant on spin factor
+  * Experimentally determined, 0.22 for a baseball
 
 #### Spin Factor
 
