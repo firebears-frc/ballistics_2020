@@ -1,7 +1,8 @@
+/** Power cell launcher */
 public class Launcher {
 
 	/** Elevation of launcher (m) */
-	static private final double ELEVATION_M = 0.6;
+	static private final double ELEVATION_M = 0.9;
 
 	/** Launch elevation (m) */
 	public final double elevationM;
