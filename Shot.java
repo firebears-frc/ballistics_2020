@@ -1,5 +1,6 @@
 import java.text.NumberFormat;
 
+/** A single simulated shot of a power cell */
 public class Shot {
 	static private final NumberFormat DISTANCE = NumberFormat.getInstance();
 	static {
@@ -27,20 +28,24 @@ public class Shot {
 		cell = c;
 	}
 
+	/** Does the shot score an inner goal? */
 	public boolean isInnerGoal() {
 		return cell.past(Port.INNER) &&
 		     !(cell.checkRange() || cell.checkCollision());
 	}
 
+	/** Does the shot score an outer goal? */
 	public boolean isOuterGoal() {
 		return cell.past(Port.OUTER) &&
 		     !(cell.checkRange() || cell.checkCollision());
 	}
 
+	/** Get the shot value */
 	public double value() {
 		return cell.y - Port.INNER.elevationM;
 	}
 
+	/** Get a string representation */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
