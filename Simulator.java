@@ -1,4 +1,6 @@
+/** Power cell trajectory simulator */
 public class Simulator {
+
 	/** Simulation interval (s) */
 	static private final double INTERVAL = 0.00001;
 
@@ -32,35 +34,14 @@ public class Simulator {
 
 	/** Get low shot */
 	private Shot lowShot() {
-		// Use simple parabola with apex at center of inner port
 		Trajectory tr = new Trajectory(launcher, Port.INNER.bottom());
-		Shot shot = simulate(tr.velocityMS);
-		if (shot.value() < 0.0)
-			return shot;	
-		tr = new Trajectory(launcher, Port.INNER.elevationM);
-		shot = simulate(tr.velocityMS);
-		if (shot.value() < 0.0)
-			return shot;	
-		tr = new Trajectory(launcher, Port.INNER.top());
-		shot = simulate(tr.velocityMS);
-		if (shot.value() < 0.0)
-			return shot;	
-		tr = new Trajectory(launcher, Port.OUTER.top());
 		return simulate(tr.velocityMS);
 	}
 
 	/** Get high shot */
 	private Shot highShot() {
-		// Use simple parabola with apex at top of outer port
-		Trajectory tr = new Trajectory(launcher, Port.OUTER.top());
-		Shot shot = simulate(tr.velocityMS);
-		if (shot.value() > 0.0)
-			return shot;
-		tr = new Trajectory(launcher, Port.INNER.top());
-		shot = simulate(tr.velocityMS);
-		if (shot.value() > 0.0)
-			return shot;
-		tr = new Trajectory(launcher, Port.INNER.elevationM);
+		Trajectory tr = new Trajectory(launcher, Port.OUTER.elevationM +
+			Port.OUTER.heightM * 2);
 		return simulate(tr.velocityMS);
 	}
 
@@ -118,25 +99,26 @@ public class Simulator {
 		});
 	}
 
+	/** Find optimal, high and low speeds */
 	private void findSpeedsForRange() {
 		Shot shot = findOptimalShot();
-		if (shot != null) {
-			Shot lo = findLowestShot();
+		if (shot != null && shot.isInnerGoal()) {
 			Shot hi = findHighestShot();
+			Shot lo = findLowestShot();
 			Log.log(shot.range);
-			Log.log(",");
-			Log.log(lo.velocity);
 			Log.log(",");
 			Log.log(shot.velocity);
 			Log.log(",");
 			Log.log(hi.velocity);
+			Log.log(",");
+			Log.log(lo.velocity);
 			Log.log();
 		}
 	}
 
 	/** Find optimal speed for all ranges */
 	static private void findSpeedsForAngle(double angle) {
-		Log.log("range,lo,optimal,hi");
+		Log.log("range,optimal,high,low");
 		Log.log();
 		// Test 1 to 1000 cm ranges (0.01 to 10.00 meters)
 		for (int range = 1; range <= 1000; range++ ) {
