@@ -1,6 +1,13 @@
 # Power Cell Ballistics
 
+Multiple shots are simulated to find the optimal launch velocity.  For each
+shot, power cell motion and acceleration are simulated in very short time steps.
+
+![Velocity vs Range][velocity vs range]
+
 ## Acceleration of Gravity
+
+Gravity is [not uniform] across the Earth's surface.
 
 Location      | `𝑔` (according to Wolfram Alpha)
 --------------|---------------------------------
@@ -9,53 +16,24 @@ Duluth        | 9.82816 m/s²
 Detroit       | 9.82025 m/s²
 Earth average | 9.80665 m/s²
 
-## Simple Parabolic Trajectory
+## Parabolic Trajectory
 
-### Step 1: Select apex at inner port
+In a vacuum, the trajectory would be a parabola.  This can be used for _trial
+shots_ to find launch velocities aiming above and below the port.
 
-Set apex `𝐇` to difference in elevation from shooter to inner port.
-
-### Step 2: Calculate velocity for trajectory to apex
-
-#### Maximum height
-
-`𝐇 = 𝑣²⋅sin²𝜃 / 2⋅𝑔`
-
-__or__
+### Velocity for trajectory to apex
 
 ```
      _______________
 𝑣 = √ 2⋅𝑔⋅𝐇 / sin²𝜃
 ```
 
-### Step 3: Calculate time to outer port
+Where:
+- 𝐇 is the height at the apex of the parabola
+- 𝑣 is projectile velocity (m/s)
+- 𝜃 is the launch angle
 
-Set `𝑥` as range to outer port.
-
-#### X Displacement
-
-`𝑥 = 𝑣⋅𝑡⋅cos𝜃`
-
-__or__
-
-`𝑡 = 𝑥 / 𝑣⋅cos𝜃`
-
-### Step 4: Calculate elevation at outer port
-
-#### Y Displacement
-
-`𝑦 = 𝑣⋅𝑡⋅sin𝜃 - ½⋅𝑔⋅𝑡²`
-
-### Step 5: Check outer port clearance
-
-Compare power cell elevation and radius with outer port.  If there is enough
-clearance, fire away!
-
-### Step 6: Start over
-
-Repeat steps 2-5, but use an apex between previous and top of outer port.
-
-## Drag Force
+## Drag Force (Air Resistance)
 
 `𝐷 = ½𝑝⋅𝑣²⋅𝐴⋅𝑐`
 
@@ -71,6 +49,8 @@ Where:
 - 𝑐 is the drag coefficient (unitless), which varies by velocity
   * Experimentally determined, related to Reynolds number
 
+![Drag on a Sphere][drag]
+
 ### Reynolds Number
 
 `𝑅 = 𝑣⋅𝑝⋅𝑙 / 𝜇`
@@ -82,16 +62,18 @@ Where:
   * For power cell, 𝑙 = 0.1778 m (7 in)
 - 𝜇 is the viscosity coefficient (kg/m⋅s = Pa⋅s)
   * For air at 15°C, it is 1.81 x 10⁻⁵ Pa⋅s
+  * For air at 20°C, it is 1.83 x 10⁻⁵ Pa⋅s
   * For air at 25°C, it is 1.85 x 10⁻⁵ Pa⋅s
 
 ### Magnus Effect (Backspin)
 
-`𝑀 = ½𝑝⋅𝓿²⋅𝐴⋅𝐿⋅(𝑤̂ ⨯ 𝑣̂)`
+`𝑀 = ½𝑝⋅𝓿²⋅𝐴⋅𝐿`
 
 Where:
-- 𝑀 is the Magnus force (N)
+- 𝑀 is the Magnus force (N) in 𝑤̂ ⨯ 𝑣̂ direction
 - 𝐿 is the lift coefficient, dependant on spin factor
   * Experimentally determined, 0.22 for a baseball
+- 𝑣̂ is the velocity vector
 - 𝑤̂ is the angular velocity vector
 
 #### Spin Factor
@@ -102,3 +84,8 @@ Where:
 - 𝑆 is the spin factor
 - 𝑤 is the tangential velocity (m/s)
 - 𝑣 is the translational velocity (m/s)
+
+
+[drag]: https://www.grc.nasa.gov/WWW/k-12/airplane/Images/dragsphere.jpg
+[not uniform]: https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/grl.50838
+[velocity vs range]: ./velocity_range_45.svg
