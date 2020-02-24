@@ -105,23 +105,21 @@ public class Simulator {
 		if (shot != null && shot.isInnerGoal()) {
 			Shot hi = findHighestShot();
 			Shot lo = findLowestShot();
-			Log.log(shot.range);
-			Log.log(",");
 			Log.log(shot.velocity);
 			Log.log(",");
 			Log.log(hi.velocity);
 			Log.log(",");
 			Log.log(lo.velocity);
 			Log.log();
+		} else {
+			Log.log("0,0,0\n");
 		}
 	}
 
 	/** Find optimal speed for all ranges */
 	static private void findSpeedsForAngle(double angle) {
-		Log.log("range,optimal,high,low");
-		Log.log();
 		// Test 1 to 1000 cm ranges (0.01 to 10.00 meters)
-		for (int range = 1; range <= 1000; range++ ) {
+		for (int range = 1; range <= 1000; range++) {
 			Simulator sim = new Simulator(angle, range / 100.0);
 			sim.findSpeedsForRange();
 		}
